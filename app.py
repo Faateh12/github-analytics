@@ -102,8 +102,8 @@ def aggregate_daily():
     _run_sql("sql/daily_backlog.sql")
     _run_sql("sql/weekly_velocity.sql")
     # enable later if desired:
-    # _run_sql("sql/bug_hotspots.sql")
-    # _run_sql("sql/pr_cycle_times.sql")
+    _run_sql("sql/bug_hotspots.sql")
+    _run_sql("sql/pr_cycle_times.sql")
     return jsonify({"status":"aggregated"})
 
 @app.post("/digest/weekly")

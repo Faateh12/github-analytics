@@ -19,3 +19,7 @@ build/
 Dockerfile.*
 docker-compose.override.yml
 '@ | Out-File -Encoding UTF8 .gitignore
+
+github_pat.txt
+token.txt
+my-gh-pat.txt
