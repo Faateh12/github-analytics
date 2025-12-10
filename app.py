@@ -110,19 +110,22 @@ def aggregate_daily():
 def digest_weekly():
     client = bigquery.Client()
     q = """
-        WITH wk AS (
-        SELECT * FROM `PROJECT.DATASET.weekly_velocity`
-        WHERE week_start = DATE_TRUNC(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), WEEK(MONDAY))
-        ),
-        bugs AS (
-        SELECT * FROM `PROJECT.DATASET.bug_hotspots`
-        )
-        SELECT TO_JSON_STRING((
-        SELECT AS STRUCT
-            (SELECT ARRAY_AGG(t) FROM wk t) AS weekly_velocity,
-            (SELECT ARRAY_AGG(b) FROM bugs b ORDER BY b.opened_30d DESC LIMIT 15) AS bug_hotspots
-        )) AS json_report;
-        """
+    WITH wk AS (
+    SELECT *
+    FROM `PROJECT.DATASET.weekly_velocity`
+    WHERE week_start = DATE_TRUNC(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), WEEK(MONDAY))
+    ),
+    bugs AS (
+    SELECT *
+    FROM `PROJECT.DATASET.bug_hotspots`
+    )
+    SELECT TO_JSON_STRING((
+    SELECT AS STRUCT
+        (SELECT ARRAY_AGG(t ORDER BY t.week_start DESC) FROM wk t) AS weekly_velocity,
+        (SELECT ARRAY_AGG(b ORDER BY b.opened_30d DESC LIMIT 15) FROM bugs b) AS bug_hotspots
+    )) AS json_report;
+    """
+
     q = q.replace("PROJECT", PROJECT).replace("DATASET", BQ_DATASET)
     rows = list(client.query(q).result())
     if not rows:
