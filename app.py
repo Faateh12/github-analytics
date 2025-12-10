@@ -118,7 +118,7 @@ def digest_weekly():
     payload = rows[0]["json_report"]
 
     vertex_ai.init(project=PROJECT, location="us-central1")
-    text = GenerativeModel("gemini-1.5-pro").generate_content(
+    text = GenerativeModel("gemini-2.0-flash-001").generate_content(
         f"""You are an EM assistant.
 Return a 3-5 sentence summary + 3 risks + 3 priorities.
 JSON data:
